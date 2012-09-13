@@ -1,6 +1,4 @@
 BlueSNP
 =======
 
-BlueSNP
-
-Reviewers, instructions to download are in the cover letter to the editor.
+Contact rjprill@us.ibm.com for information.
