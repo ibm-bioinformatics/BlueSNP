@@ -6,7 +6,7 @@ BlueSNP
 News
 ----------
 
-* 10/29/2012 BlueSNP source will be released shortly. Contact rjprill@us.ibm.com for more information.
+* 10/29/2012 BlueSNP package and documentation posted. Source will be posted shortly. Contact rjprill@us.ibm.com for more information.
 
 Getting started
 ----------
@@ -22,8 +22,10 @@ BlueSNP_0.1.0 (current version) depends on [RHIPE_0.69](https://github.com/sapta
 Synopsis
 ----------
 
+### Analyze many phenotypes (e.g., diseases)
+
     library(BlueSNP)                         # GWAS functions using Hadoop
-    
+
 Import SNP data in [PLINK tped format](http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml#tr).
 
     read.plink.tped(
@@ -54,4 +56,37 @@ Output:
     5  p.value  rs1326419  13  89282652          NaN 5.023752e-07
     6  p.value rs10848150  12 131057033          NaN 7.488903e-06
     7  p.value rs11011036  10  19961205          NaN 9.903649e-06
+
+### Monte Carlo p-values
+
+Any user-defined function of genotype and phenotype can be a test statistic.
+
+my_custom_test.R
+
+    my.custom.test <- function(y, x) {
+      # y is phenotype vector
+      # x is genotype vector
+    
+      N = length(x)                          # number of individuals
+      stat = cor(y, x)^2 * (N - 2)           # test statistic
+    
+      list(n.individuals=N, stat=stat)       # return a list of named entries
+    }
+
+Estimate empirical p-values using the test statistic defined by `my.custom.test`.
+
+    gwas.adaptive.perm(
+      genotype.hdfs.path="/snps",
+      phenotype.hdfs.path="/pheno.RData",
+      output.hdfs.path="/results-custom",
+      n.permutations=1e7,
+      user.code="/my_custom_test.R",
+      mytest="my.custom.test",
+      statistic.name="stat"
+    )
+
+Fetch results.
+
+    results = gwas.results.perm("/results-custom")
+    subset(results, p.value<.0001)
 
