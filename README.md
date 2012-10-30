@@ -1,3 +1,5 @@
+Copyright IBM Corp. 2011, 2012
+
 BlueSNP
 ==========
 
