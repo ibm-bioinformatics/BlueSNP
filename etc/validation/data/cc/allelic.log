@@ -1,0 +1,44 @@
+
+@----------------------------------------------------------@
+|        PLINK!       |     v1.07      |   10/Aug/2009     |
+|----------------------------------------------------------|
+|  (C) 2009 Shaun Purcell, GNU General Public License, v2  |
+|----------------------------------------------------------|
+|  For documentation, citation & bug-report instructions:  |
+|        http://pngu.mgh.harvard.edu/purcell/plink/        |
+@----------------------------------------------------------@
+
+Web-based version check ( --noweb to skip )
+Recent cached web-check found... OK, v1.07 is current
+
+Writing this text to log file [ allelic.log ]
+Analysis started: Tue Jul 10 15:47:31 2012
+
+Options in effect:
+	--bfile case_control
+	--assoc
+	--out allelic
+
+Reading map (extended format) from [ case_control.bim ] 
+1010 markers to be included from [ case_control.bim ]
+Reading pedigree information from [ case_control.fam ] 
+2000 individuals read from [ case_control.fam ] 
+2000 individuals with nonmissing phenotypes
+Assuming a disease phenotype (1=unaff, 2=aff, 0=miss)
+Missing phenotype value is also -9
+1000 cases, 1000 controls and 0 missing
+0 males, 2000 females, and 0 of unspecified sex
+Reading genotype bitfile from [ case_control.bed ] 
+Detected that binary PED file is v1.00 SNP-major mode
+Before frequency and genotyping pruning, there are 1010 SNPs
+2000 founders and 0 non-founders found
+Total genotyping rate in remaining individuals is 1
+0 SNPs failed missingness test ( GENO > 1 )
+0 SNPs failed frequency test ( MAF < 0 )
+After frequency and genotyping pruning, there are 1010 SNPs
+After filtering, 1000 cases, 1000 controls and 0 missing
+After filtering, 0 males, 2000 females, and 0 of unspecified sex
+Writing main association results to [ allelic.assoc ] 
+
+Analysis finished: Tue Jul 10 15:47:31 2012
+

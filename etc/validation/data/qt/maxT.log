@@ -1,0 +1,52 @@
+
+@----------------------------------------------------------@
+|        PLINK!       |     v1.07      |   10/Aug/2009     |
+|----------------------------------------------------------|
+|  (C) 2009 Shaun Purcell, GNU General Public License, v2  |
+|----------------------------------------------------------|
+|  For documentation, citation & bug-report instructions:  |
+|        http://pngu.mgh.harvard.edu/purcell/plink/        |
+@----------------------------------------------------------@
+
+Web-based version check ( --noweb to skip )
+Recent cached web-check found... OK, v1.07 is current
+
+Writing this text to log file [ maxT.log ]
+Analysis started: Fri Jul 13 10:21:31 2012
+
+Options in effect:
+	--bfile quantitative_trait
+	--linear
+	--tdt
+	--mperm 100
+	--out maxT
+
+Reading map (extended format) from [ quantitative_trait.bim ] 
+1010 markers to be included from [ quantitative_trait.bim ]
+Reading pedigree information from [ quantitative_trait.fam ] 
+1000 individuals read from [ quantitative_trait.fam ] 
+1000 individuals with nonmissing phenotypes
+Assuming a quantitative trait
+Missing phenotype value is -9
+0 males, 1000 females, and 0 of unspecified sex
+Reading genotype bitfile from [ quantitative_trait.bed ] 
+Detected that binary PED file is v1.00 SNP-major mode
+Before frequency and genotyping pruning, there are 1010 SNPs
+1000 founders and 0 non-founders found
+Total genotyping rate in remaining individuals is 1
+0 SNPs failed missingness test ( GENO > 1 )
+0 SNPs failed frequency test ( MAF < 0 )
+After frequency and genotyping pruning, there are 1010 SNPs
+After filtering, 1000 individuals with non-missing status
+After filtering, 0 males, 1000 females, and 0 of unspecified sex
+1000 nuclear families, 1000 founder singletons found
+0 non-founders with 2 parents in 0 nuclear families
+0 non-founders without 2 parents in 0 nuclear families
+0 phenotypically discordant parent pairs found
+Converting data to Individual-major format
+Set to permute within 1 cluster(s)
+Writing linear model association results to [ maxT.assoc.linear ] 
+Writing permutation association results to [ maxT.assoc.linear.mperm ] 
+
+Analysis finished: Fri Jul 13 10:23:23 2012
+

@@ -1,0 +1,1 @@
+Validate the output of each association test against PLINK output.
