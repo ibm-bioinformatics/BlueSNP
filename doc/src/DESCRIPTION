@@ -1,0 +1,11 @@
+Package: ::PACKAGE::
+Type: Package
+Title: Highly scalable GWAS using Hadoop clusters
+Version: ::VERSION::
+Date: ::DATE::
+Author: Robert J. Prill, Hailiang Huang, Sandeep Tata
+Maintainer: Robert J. Prill <rjprill@us.ibm.com>
+Description: Highly scalable GWAS using Hadoop clusters
+License: Apache License, Version 2.0
+LazyLoad: yes
+Requires: Rhipe
