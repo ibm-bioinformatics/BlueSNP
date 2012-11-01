@@ -15,10 +15,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
+Contact
+----------
+
+* Contact rjprill@us.ibm.com about collaborations related to bioinformatics using Hadoop clusters
+
 News
 ----------
 
-* 10/29/2012 BlueSNP package and documentation posted. Source will be posted shortly. Contact rjprill@us.ibm.com for more information.
+* 11/01/2012 BlueSNP source, package, and documentation posted.
 
 Getting started
 ----------
