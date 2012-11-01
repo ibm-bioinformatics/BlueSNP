@@ -1,0 +1,1 @@
+This is the source code for the Tutorial document, written in Sweave, a dialect of LaTeX with embedded R code.

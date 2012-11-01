@@ -1,0 +1,74 @@
+\section{Preliminaries}
+
+\subsection{Software Version}
+
+\begin{verbatim}
+  BlueSNP 0.1.0
+\end{verbatim}
+
+\subsection{Installation}
+
+\begin{itemize}
+\item This document picks-up where the installation instructions in the BlueSNP manual leave-off. 
+\item \textbf{Before proceeding you must install the BlueSNP package and it's dependencies.} \item See the \textbf{BlueSNP Manual} for installation instructions.
+\end{itemize}
+
+\subsection{Download the Tutorial sample data}
+
+Log into the Rhipe VM running on port 2222, user:username, pass:password
+\begin{verbatim}
+  $ ssh -p 2222 localhost -l username
+\end{verbatim}
+
+Download the tutorial materials using wget 
+\begin{verbatim}
+  $ wget https://github.com/downloads/ibm-bioinformatics/BlueSNP/tutorial_data_v1.tgz
+\end{verbatim}
+
+Unzip
+\begin{verbatim}
+  $ tar xvzf tutorial_data.tgz
+\end{verbatim}
+
+\subsection{Copy the tutorial files to the Hadoop filesystem}
+
+Verify that the HDFS directory /user/username exists. (This should have been created at the time of BlueSNP package installation and testing.)
+
+\begin{verbatim}
+  $ hadoop fs -ls /user/username
+\end{verbatim}
+
+If if does not exist, create it.
+\begin{verbatim}
+  $ hadoop fs -mkdir /user/username
+\end{verbatim}
+
+Copy the tutorial directory from the local filesystem to the HDFS.
+\begin{verbatim}
+  $ hadoop fs -copyFromLocal tutorial /user/username
+\end{verbatim}
+
+Verify that the -copyFromLocal command worked.
+\begin{verbatim}
+  $ hadoop fs -ls .  # note dot at end
+  $ hadoop fs -ls tutorial
+\end{verbatim}
+
+Note that a dot (period) is a Hadoop shorthand for the ``current'' HDFS directory, /user/username.
+
+Change to the directory containing the R code.
+\begin{verbatim}
+  $ cd tutorial/R
+\end{verbatim}
+
+Using an additional login window, you may open the tutorial code in a text editor to follow along, or simply cut and paste from this document.
+
+\begin{verbatim}
+  $ pico tutorial.R
+\end{verbatim}
+
+Start R
+\begin{verbatim}
+  $ R
+\end{verbatim}
+

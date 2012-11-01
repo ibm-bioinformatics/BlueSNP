@@ -1,0 +1,140 @@
+<<echo=false>>= 
+options(continue="  ") 
+@
+
+\subsection{Using an association test defined in another package}
+
+A user-defined association test can make use of another R package so long as the user-defined function loads the package using the library(packagename). As an example, we demonstrate how to use the EMMA package for efficient mixed-model association \cite{KangZaitlen2008}. 
+
+\subsubsection{Efficient Mixed-Model Association (EMMA)}
+
+First, download and install the EMMA R package. You must obtain emma from the author's website (http://mouse.cs.ucla.edu/emma/). WARNING: The CRAN package called emma is unrelated to genetics!
+
+Download and install EMMA.
+
+\begin{verbatim}  
+  $ wget http://mouse.cs.ucla.edu/emma/emma_1.1.2.tar.gz
+  $ sudo R CMD INSTALL emma_1.1.2.tar.gz
+\end{verbatim}
+
+We use the Tutorial case-control data set on the local filesystem at (/tutorial/cc/data) and on the HDFS at (/user/username/tutorial/cc/data).
+
+In addition to genotype and phenotype data, mixed-model association requires a kinship matrix specifying relations among the individuals, such as the strain. Emma provides a helper function for computing this directly from the SNP data. This is a computationally intensive step that is done one time and saved for later.
+
+Load a small subset of the SNP data into the R workspace using the BlueSNP helper function peek() which is intended to be used for debugging, but as a side effect is also useful for loading a small subset of records into the R workspace.
+
+<<>>=
+library(emma)
+library(BlueSNP)
+peek("tutorial/cc/snps", 20)
+@
+
+We fetched 20 SNP records. We now have two lists in the R workspace, keys and values.
+<<>>=
+head(keys)
+@
+
+This R one-liner builds a genotype matrix from the list, values.
+<<results=hide>>=
+X = do.call("cbind", lapply(values, "[[", "snp.vector"))
+@
+
+The emma.kinship() function expects the transpose of X and SNP values in {0, .5, 1} instead of {0, 1, 2}, thus we take the transpose with t() and divide by 2. (For the purpose of this tutorial, it is not important to understand the details of the EMMA data format.)
+<<results=hide>>=
+K = emma.kinship(t(X/2))
+@
+
+We need to save the kinship matrix K to an appropriate place. Currently the phenotype matrix (Y) is located in /tutorial/cc/pheno.RData. This is an ideal place to save K. Fetch 
+phenotype.RData from the HDFS to the local FS.
+
+<<>>=
+rhget("tutorial/cc/pheno.RData", ".")
+@
+
+Load it into the R workspace.
+<<>>=
+load("pheno.RData")
+@
+
+Re-save Y and K to a new RData file.
+<<>>=
+save(file="pheno_and_kinship.RData", list=c("Y", "K"))
+@
+
+And copy it to the HDFS
+<<>>=
+rhput("pheno_and_kinship.RData", "tutorial/cc")
+@
+
+Let's fit the emma model to one SNP.
+<<>>=
+y = Y[,1]
+x = X[,1]
+emma.MLE(y, cbind(1, x/2), K)
+@
+
+Now, we write a function to perform this test using BlueSNP. In a text editor create the file my\_emma\_test.R.
+
+\begin{verbatim}
+# my_emma_test.R
+linear.mixed.model <- function(y, x) {
+  # y is phenotype vector {0,1} or {1,2} = {control, case}
+  # x is genotype vector {0,1,2}
+
+  # REQUIRED CONVENTION
+  # return output names when function is called with no args
+  if (nargs()==0) {  # called with no params
+    return(c("ML", "delta", "ve", "vg", "n.individuals", "p.value"))
+  }
+  
+  # select elements with values
+  is = !is.na(x) & !is.na(y)  
+  x = x[is]
+  y = y[is]
+
+  N = as.numeric(sum(is))
+
+  # allow {1,2} instead of {0,1} labels
+  if (max(y) > 1) {
+    if (max(y)==2) {
+      y = y - 1
+    } else {
+      stop("case-control phenotype must be encoded as {1,0} or {2,1}")
+    }
+  }
+
+  library(emma)  # require() gives errors with Rhipe
+
+  # due to lexical scoping, K is available in the calling environment
+  results = emma.MLE(y, cbind(1, x/2), K)  # returns a list
+  
+  # emma.MLE does not return a p.value but gwas()
+  # requires a p.value for filtering on p.value
+  # so we fudge this with a p.value of 2 
+  # to provide a clue that it's not real.
+  c(results, n.individuals=N, p.value=2)
+}
+\end{verbatim}
+
+my\_emma\_test.R is already on the HDFS at /tutorial/cc/R/my\_emma\_test.R. You can overwrite by copying from the local filesystem to the HDFS
+
+\begin{verbatim}
+rhput("my_emma_test.R", "tutorial/cc/R")
+\end{verbatim}
+
+Finally, run the association tests.
+<<results=hide>>=
+library(BlueSNP)
+gwas(
+  genotype.hdfs.path="tutorial/cc/snps", 
+  phenotype.hdfs.path="tutorial/cc/pheno_and_kinship.RData",
+  output.hdfs.path="tutorial/cc/results-emma",
+  user.code="tutorial/R/my_emma_test.R",
+  method="linear.mixed.model",
+  pvalue.report.cutoff=3
+)
+@
+Since we used a dummy p-value of 2 as a return value, we need to supply a number greater than 2 for the pvalue.report.cutoff parameter.
+
+This analysis takes a long time to run, especially on a single-node ``cluster''.
+

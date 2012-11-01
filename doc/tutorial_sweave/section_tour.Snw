@@ -1,0 +1,244 @@
+<<echo=false>>= 
+options(continue="  ") 
+@
+
+\section{Tour of BlueSNP commands}
+
+\subsection{Basics}
+
+The main BlueSNP function is
+
+\begin{itemize}
+  \item gwas()
+\end{itemize}
+
+Additionally, there are two similar functions that implement different types of data permutations to estimate empirical p-values
+
+\begin{itemize}
+  \item gwas.maxT.perm()
+  \item gwas.adaptive.perm()
+\end{itemize}
+
+These functions have three required parameters used to specify input and output HDFS paths
+
+\begin{itemize}
+  \item genotype.hdfs.path
+  \item phenotype.hdfs.path
+  \item output.hdfs.path
+\end{itemize}
+
+\subsection{Analyzing quantitative phenotypes}
+
+First we analyze a quantitative phenotype using linear regression as the association test. Genotypes are represented using the minor allele count {0, 1, 2} (additive genetic model). Quantitative phenotypes are decimal values. All data was simulated with PLINK. 
+
+You should have already copied the tutorial data to the HDFS in one of the first steps of this Tutorial. The quantitative phenotype data is at the HDFS path
+
+\begin{itemize}
+  \item /user/username/tutorial/qt/data/
+\end{itemize}
+
+\subsection{Parse PLINK data files}
+
+Load the BlueSNP package.
+<<results=hide>>=
+library(BlueSNP)
+@
+
+Parse PLINK tped file(s) into SNP records. Since the tutorial data set is unreasonably small, we force multiple output files with the parameter mapred.reduce.tasks=5.
+<<results=hide>>=
+read.plink.tped(
+  tped.hdfs.path="tutorial/qt/data/simulated_qt.tped",
+  output.hdfs.path="tutorial/qt/snps", 
+  mapred.reduce.tasks=5
+)
+@
+
+Parse PLINK tfam file into a phenotype data matrix.
+<<results=hide>>=
+read.plink.tfam(
+  "tutorial/qt/data/simulated_qt.tfam", 
+  "tutorial/qt/pheno.RData"
+)
+@
+
+\subsection{Analyze one trait}
+
+Run the default association test (linear regression)
+<<results=hide>>=
+gwas(
+  "tutorial/qt/snps", 
+  "tutorial/qt/pheno.RData", 
+  "tutorial/qt/results", 
+  pvalue.report.cutoff=.1
+)
+@
+
+Load output from gwas() into R workspace
+<<results=hide>>=
+results = gwas.results("tutorial/qt/results")
+@
+<<>>=
+head(results)
+@
+
+Since there's only one phenotype, we can reshape results into a more intuitive summary table.
+<<results=hide>>=
+results2 = gwas.results.reshape(results)
+@
+<<>>=
+head(results2)
+@
+
+We can plot the negative log of the p-values.
+<<fig=true, height=4, width=6>>=
+plot(-log10(results2$p.value))
+@
+
+The combination of small sample size and low magnitude effect size conspire to create association statistics that are not genome-wides significant at typical levels.
+
+\subsection{Analyze multiple traits}
+
+The following function, included in tutorial data package, makes some additional (fake) phenotypes. It writes tutorial/pheno10.RData to the HDFS, a matrix of 10 columns corresponding to 10 phenotypes.
+<<results=hide>>=
+source("~/tutorial/R/generate_more_phenotypes.R")  # local file system
+generate.more.phenotypes(
+  "tutorial/qt/pheno.RData", 
+  "tutorial/qt/pheno10.RData", 10
+)
+@
+
+Now we perform a GWAS on three of the phenotypes, specified by column name or column number of the pheno10.RData matrix using the parameter, phenotype.cols.
+<<results=hide>>=
+gwas(
+  "tutorial/qt/snps",
+  "tutorial/qt/pheno10.RData",
+  "tutorial/qt/results-multi",
+  pvalue.report.cutoff=.001, 
+  phenotype.cols=1:3
+)
+@
+
+Load the results into the workspace.
+<<results=hide>>=
+results = gwas.results("tutorial/qt/results-multi")
+@
+<<>>=
+head(results)
+@
+
+Restrict the results to p-values (omit other information such as regression coefficient, number of samples, etc.).
+<<results=hide>>=
+P = gwas.results("tutorial/qt/results-multi", type="p.value")
+@
+<<>>=
+head(P)
+@
+
+Cols 1-4 of P contain genome mapping info, col 5 holds the results for pheno1, col 6 holds the results for pheno2, and so on. NA entries in P occur if the pvalue.report.cutoff option of gwas() is not satisfied for a particular phenotype.
+<<fig=true, height=4, width=6>>=
+plot(-log10(P[,5]))
+@
+
+We can reshape results of one phenotype (col 5) into a more intuitive summary table.
+<<results=hide>>=
+results2 = gwas.results.reshape(results[,1:5])
+@
+<<>>=
+head(results2)
+@
+
+\subsection{maxT permutation}
+
+The maxT procedure for estimating family-wise p-values is available.
+<<results=hide>>=
+gwas.maxT.perm(
+  "tutorial/qt/snps", 
+  "tutorial/qt/pheno.RData", 
+  "tutorial/qt/results-maxT", 
+  n.permutations=100
+)
+results = gwas.results.perm("tutorial/qt/results-maxT")
+@
+<<>>=
+head(results)
+@
+
+\subsection{Adaptive permutation}
+
+The adaptive permutation procedure drops SNPs from further consideration when the current p-value estimate exceeds a threshold. A SNP is dropped when there are N or more occurrences of a random test statistic greater than the actual test statistic. The default value of N is 5. This default supports the estimation of p-values with p $\le$ 5x$10^{-N}$.
+<<results=hide>>=
+gwas.adaptive.perm(
+  "tutorial/qt/snps", 
+  "tutorial/qt/pheno.RData", 
+  "tutorial/qt/results-adaptive", 
+  n.permutations=2e5
+)
+results = gwas.results.perm("tutorial/qt/results-adaptive")
+@
+<<>>=
+head(results)
+@
+
+The p.value.adjusted column only pertains to maxT permutation, not adaptive permutation, so the values are NULL.
+
+\subsection{Analyzing case-control phenotypes}
+
+Simulated case-control phenotypes are also provided in the tutorial data package. Categorical phenotypes should be encoded using either {control=1, case=2} or {control=0, case=1}. All data was simulated with PLINK which uses the {1, 2} representation.
+
+You should have already copied the tutorial data to the HDFS in one of the first steps of this Tutorial. The case-control phenotype data is at the HDFS path
+
+\begin{itemize}
+  \item /user/username/tutorial/cc/data/
+\end{itemize}
+
+<<results=hide>>=
+read.plink.tped(
+  "tutorial/cc/data/simulated_cc.tped", 
+  "tutorial/cc/snps", 
+  mapred.reduce.tasks=5
+)
+read.plink.tfam(
+  "tutorial/cc/data/simulated_cc.tfam", 
+  "tutorial/cc/pheno.RData"
+)
+@
+
+The following function, included in the tutorial data package, makes some additional (fake) phenotypes. It writes tutorial/pheno10.RData to the HDFS, a matrix of 10 columns corresponding to 10 phenotypes.
+<<results=hide>>=
+source("~/tutorial/R/generate_more_phenotypes.R")
+generate.more.phenotypes("tutorial/cc/pheno.RData", 
+  "tutorial/cc/pheno10.RData", 10)
+@
+
+An appropriate case-control test such as the allelic test (cc.allelic) or logistic regression test (cc.logistic) is required. See the parameter method=.
+<<results=hide>>=
+gwas(
+  "tutorial/cc/snps", 
+  "tutorial/cc/pheno10.RData", 
+  "tutorial/cc/results-allelic", 
+  method="cc.allelic",
+  pvalue.report.cutoff=0.001,
+  phenotype.cols=1:3
+)
+results = gwas.results("tutorial/cc/results-allelic")
+@
+<<>>=
+head(results)
+@
+
+Inspect results for one phenotype (column 5).
+<<results=hide>>=
+results2 = gwas.results.reshape(results[,1:5])
+@
+<<>>=
+head(results2)
+@
+
+Inspect the p-values for all phenotypes.
+<<results=hide>>=
+P = gwas.results("tutorial/cc/results-allelic", type="p.value")
+@
+<<>>=
+head(P)
+@
+

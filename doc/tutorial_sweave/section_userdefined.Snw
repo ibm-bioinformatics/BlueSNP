@@ -1,0 +1,85 @@
+<<echo=false>>= 
+options(continue="  ") 
+@
+
+\section{User-defined association tests}
+
+\subsection{From scratch}
+
+Functions that perform an association test follow conventions illustrated in the following example.
+<<results=hide>>=
+# my_custom_test.R
+my.custom.test <- function(y, x) {
+  # y is phenotype vector {0,1} = {control,case} or {1,2} = {control,case}
+  # x is genotype {0,1,2} = number of copies minor allele
+
+  # REQUIRED CONVENTION
+  # Return output var names when function is called with no params
+  if (nargs()==0) {  # called with no params
+    y = sample(0:1, 100, replace=T)  # dummy data
+    x = sample(0:2, 100, replace=T)
+    return(names(my.custom.test(y, x)))
+  }
+
+  # select elements with values
+  is = !is.na(x) & !is.na(y)  
+  x = x[is]
+  y = y[is]
+
+  # number of individuals
+  N = as.numeric(sum(is))
+  
+  # our novel test statistic
+  stat = cor(y, x)^2 * (N - 2)
+
+  # REQUIRED CONVENTION
+  # return a list of named entries
+  list(n.individuals=N, stat=stat)
+}
+@
+
+Note the two conventions: the return value is a list of named elements, and the function called without arguments returns the names of the returned list elements. Also note that the return list elements in this example don't include an element called ``p.value''. Therefore this function is suitable for estimating empirical p-values using gwas.adaptive.perm() or gwas.maxT.perm() but this function can not be used by gwas() which requires a ``p.value'' return value. To use this function with gwas() we must return a dummy p-value, preferably one that will alert the user that the p-value is not real. 
+
+\begin{verbatim}
+  ...
+  # returns dummy p-value for compatability with gwas()
+  list(n.individuals=N, stat=stat, p.value=2)
+}
+\end{verbatim}
+
+The function my.custom.test() is included in tutorial/R/my\_custom\_test.R and was already copied to the HDFS in one of the first steps of this Tutorial. Otherwise, at the UNIX command prompt, copy the text file from the local filesystem to the HDFS.
+
+\begin{verbatim}
+  $ hadoop fs -copyFromLocal ~/tutorial/R/my_custom_test.R tutorial/R
+\end{verbatim}
+
+Note that my.custom.test() does not return a p-value, only a test statistic. We estimate empirical p-values using gwas.maxT.perm() or gwas.adaptive.perm().
+
+<<results=hide>>=
+gwas.maxT.perm(
+  "tutorial/cc/snps",
+  "tutorial/cc/pheno.RData",
+  "tutorial/cc/results-custom",
+  n.permutations=200,
+  user.code="tutorial/R/my_custom_test.R",
+  method="my.custom.test",
+  statistic.name="stat"
+)
+@
+
+Note that we supplied parameters specifying the HDFS path of the text file containing the function definition of the user-defined code, the name of the user-defined function implementing the statistical test, and the name of the list element holding the test statistic returned by user-defined function.
+
+<<results=hide>>=
+results = gwas.results.perm("tutorial/cc/results-custom")
+@
+<<>>=
+head(results)
+@
+
+Inspect SNPs with adjusted p-values below a threshold.
+<<>>=
+subset(results, p.value.adjusted<.01)
+@
+
+The p.value.adjusted column is the family-wise p-value from the maxT procedure.
+
