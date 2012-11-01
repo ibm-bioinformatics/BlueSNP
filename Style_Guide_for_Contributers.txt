@@ -1,0 +1,28 @@
+BlueSNP R Package Coding Style Guide
+
+Soft tabs (2 spaces)
+
+define functions using arrow operator
+  myfunction <- function() { ... }
+
+assign variables using equals operator
+  x = 123
+
+pass parameters using no space between equals symbol and value
+  myfunction(x=1, y=2)
+
+space after comma when passing multiple parameters
+  myfunction(x=1, y=2)
+
+name functions with dots
+  qt.linear.regression <- function(y, x) { # code goes here }
+
+name files with underscores
+  qt_linear_regression.R
+
+every function in its own file
+  function1.R
+  function2.R
+
+every function in its own file except helper functions that only apply the the parent function
+

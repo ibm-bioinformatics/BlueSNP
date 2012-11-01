@@ -1,0 +1,19 @@
+
+REGULAR USERS should download the latest BlueSNP R package and BlueSNP Manual (with step-by-step installation instructions) here:
+
+https://github.com/ibm-bioinformatics/bluesnp/downloads
+
+DEVELOPERS and advanced users can install from source as follows:
+
+> make           # build package (copies relevant files to build/ dir)
+> make install   # shortcut for "R CMD INSTALL BlueSNP"
+> make clean     # remove files produced by make all
+> make uninstall # shortcut for "R CMD REMOVE BlueSNP"
+
+Makefile includes some additional convenience functions that you may or may not find useful. For example:
+
+> make install_remote    # install on remote server
+> make uninstall_remote  # uninstall no remote server
+
+See Makefile comments for details.
+
