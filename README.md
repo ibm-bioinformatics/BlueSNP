@@ -34,7 +34,7 @@ Regular users who are not interested in the source code should download the foll
 * BlueSNP Tutorial (usage instructions)
 * Tutorial data (for following along)
 
-BlueSNP_0.1.0 (current version) depends on [RHIPE_0.69](https://github.com/saptarshiguha/RHIPE/downloads). Because RHIPE installation is [non-trivial](https://www.datadr.org/install.html), we recommend trying BlueSNP using the [RHIPE virtual machine (VM)](https://docs.google.com/open?id=0BzruSBxuthmjUS1vU3lzOENXWlU) made available by the authors of RHIPE. The BlueSNP Manual gives step-by-step instructions for using the RHIPE VM with BlueSNP.
+BlueSNP_0.1.0 (current version) depends on [RHIPE_0.69](https://github.com/saptarshiguha/RHIPE/downloads). Because RHIPE installation is [non-trivial](https://www.datadr.org/install.html), we recommend trying BlueSNP using the [RHIPE virtual machine (VM)](https://docs.google.com/open?id=0BzruSBxuthmjUS1vU3lzOENXWlU) made available by the authors of RHIPE. The BlueSNP Manual gives step-by-step instructions for using BlueSNP with the RHIPE VM.
 
 Synopsis
 ----------
