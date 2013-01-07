@@ -15,22 +15,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-Citation
-----------
-
-* In press. Please check back soon.
-
-Contact
-----------
-
-* Contact rjprill@us.ibm.com about collaborations related to bioinformatics using Hadoop clusters
-
-News
-----------
-
-* 11/01/2012 BlueSNP source, package, and documentation posted.
-
-Getting started
+Download
 ----------
 
 Regular users who are not interested in the source code should download the following files from [Downloads](https://github.com/ibm-bioinformatics/BlueSNP/downloads).
@@ -40,6 +25,23 @@ Regular users who are not interested in the source code should download the foll
 * Tutorial data (for following along)
 
 BlueSNP_0.1.0 (current version) depends on [RHIPE_0.69](https://github.com/saptarshiguha/RHIPE/downloads). Because RHIPE installation is [non-trivial](https://www.datadr.org/install.html), we recommend trying BlueSNP using the [RHIPE virtual machine (VM)](https://docs.google.com/open?id=0BzruSBxuthmjUS1vU3lzOENXWlU) made available by the authors of RHIPE. The BlueSNP Manual gives step-by-step instructions for using BlueSNP with the RHIPE VM.
+
+Contact
+----------
+
+* Contact rjprill@us.ibm.com for technical assistance and for academic collaborations related to large-scale bioinformatics.
+
+How to cite
+----------
+
+* H. Huang, S. Tata, and R. J. Prill. [BlueSNP: R package for highly scalable genome-wide association studies using Hadoop clusters]. *Bioinformatics*, 29(1):135–136, Jan 2013.
+
+* http://bioinformatics.oxfordjournals.org/content/29/1/135
+
+News
+----------
+
+* 11/01/2012 BlueSNP source, package, and documentation posted.
 
 Synopsis
 ----------
