@@ -18,7 +18,7 @@ limitations under the License.
 Download
 ----------
 
-Regular users who are not interested in the source code should download the following files from [Downloads](https://github.com/ibm-bioinformatics/BlueSNP/downloads).
+Regular users who are not interested in the source code should download the following files from [**DOWNLOADS**](https://github.com/ibm-bioinformatics/BlueSNP/downloads).
 * BlueSNP R package
 * BlueSNP Manual (installation instructions)
 * BlueSNP Tutorial (usage instructions)
