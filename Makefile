@@ -1,7 +1,7 @@
 # Robert J. Prill <rjprill@us.ibm.com>
 
 PACKAGE="BlueSNP"
-VERSION="0.1.0"
+VERSION="0.1.1"
 DATE="11-01-2012"
 
 # Some tasks require that environment variables 
@@ -9,7 +9,7 @@ DATE="11-01-2012"
 # BLUESNP_REPORT_PORT (ssh)
 # be set in .bashrc
 
-all:	setup description R man package
+all:	setup description R man package inst
 
 setup:	
 	if [ ! -d build ]; then mkdir build; fi
@@ -36,9 +36,9 @@ man:	setup
 
 inst:	setup
 	if [ ! -d build/inst ]; then mkdir build/inst; fi
-	cp etc/tutorial/cc/data/simulated* build/inst  # simulated data in tutorial/
+	cp src/test/simulated* build/inst  # simulated data in tutorial/
 
-package:	setup description R man
+package:	setup description R man inst
 	if [ -d ${PACKAGE} ]; then rm -r ${PACKAGE}; fi
 	cp -r build ${PACKAGE}
 	tar czf - ${PACKAGE} > temp1
