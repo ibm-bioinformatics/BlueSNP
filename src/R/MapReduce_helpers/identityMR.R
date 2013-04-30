@@ -27,7 +27,7 @@ identityMR <- function(ifolder, ofolder, user.code=NULL) {
     mapred=list(
       mapred.map.tasks=map.task.capacity(),
       mapred.reduce.tasks=reduce.task.capacity(),
-      mapred.task.timeout=ONEMIN
+      mapred.task.timeout=minutes(1)
     )
   )
   

@@ -48,7 +48,7 @@ filter.by.keys <- function(
     mapred = list(
       mapred.map.tasks=map.task.capacity(),
       mapred.reduce.tasks=reduce.task.capacity(),
-      mapred.task.timeout=ONEMIN*minutes.until.timeout,
+      mapred.task.timeout=minutes(minutes.until.timeout),
       rhipe_map_buffsize=RHIPE_MAP_BUFFSIZE,
       rhipe_reduce_buffsize=RHIPE_REDUCE_BUFFSIZE,
       mapred.min.split.size=mapred.min.split.size
