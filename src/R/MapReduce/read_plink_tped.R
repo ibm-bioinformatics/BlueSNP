@@ -80,7 +80,7 @@ read.plink.tped <- function(
     ofolder=ofolder,
     mapred=list(
       mapred.reduce.tasks=mapred.reduce.tasks,
-      mapred.task.timeout=ONEMIN*minutes.until.timeout,
+      mapred.task.timeout=minutes(minutes.until.timeout),
       rhipe_map_buffsize=RHIPE_MAP_BUFFSIZE,
       rhipe_reduce_buffsize=RHIPE_REDUCE_BUFFSIZE
     )

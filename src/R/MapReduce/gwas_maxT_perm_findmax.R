@@ -73,7 +73,7 @@ gwas.maxT.perm.findmax <- function(
     partitioner=list(lims=1, type="integer"),
     mapred = list(
       mapred.reduce.tasks=reduce.task.capacity(),
-      mapred.task.timeout=ONEMIN*minutes.until.timeout,
+      mapred.task.timeout=minutes(minutes.until.timeout),
       rhipe_map_buffsize=RHIPE_MAP_BUFFSIZE,
       rhipe_reduce_buffsize=RHIPE_REDUCE_BUFFSIZE
     )
@@ -104,7 +104,7 @@ gwas.maxT.perm.findmax <- function(
     orderby="integer",
     mapred = list(
       mapred.reduce.tasks=1,
-      mapred.task.timeout=ONEMIN*minutes.until.timeout,
+      mapred.task.timeout=minutes(minutes.until.timeout),
       rhipe_map_buffsize=RHIPE_MAP_BUFFSIZE,
       rhipe_reduce_buffsize=RHIPE_REDUCE_BUFFSIZE,
       mapred.textoutputformat.usekey=T,

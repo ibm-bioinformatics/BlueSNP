@@ -20,6 +20,11 @@ ONEMIN = 60000  # ms
 RHIPE_MAP_BUFFSIZE    = 100  # number of records per batch **250MB Rhipe limit**
 RHIPE_REDUCE_BUFFSIZE = 100  # much safer than the default of 10,000 records
 
+# Minutes conversion function (as integers, not numerics)
+minutes <- function(m) {
+  as.integer(ONEMIN * m)
+}
+
 .onAttach <- function(libname, pkgname) {
   version <- read.dcf(file=system.file("DESCRIPTION", package=pkgname), fields="Version")
   packageStartupMessage(paste("\n", pkgname, version, "\n", "

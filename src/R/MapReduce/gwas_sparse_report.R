@@ -87,7 +87,7 @@ gwas.sparse.report <- function(
     orderby="character",
     mapred=list(
       mapred.reduce.tasks=mapred.reduce.tasks,
-      mapred.task.timeout=ONEMIN,
+      mapred.task.timeout=minutes(1),
       rhipe_map_buffsize=rhipe_map_buffsize,
       mapred.textoutputformat.usekey=F,
       mapred.field.separator="\t",
